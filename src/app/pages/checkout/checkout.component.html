@@ -92,15 +92,28 @@
       <div class="review-row mb-0 no-border">
         <span class="label">Total a pagar:</span>
         <div class="currency-grid">
+          <!-- Primary Currency (Dynamic) -->
           <div class="currency-item main">
+            <span class="curr-label">
+              {{ config?.monedaDefaultTienda === 'BS' ? 'Bolívares (BS)' : config?.monedaDefaultTienda === 'COP' ? 'Pesos (COP)' : 'Dólares (USD)' }}
+            </span>
+            <span class="curr-val">{{ api.formatPrice(cart.getTotal()) }}</span>
+          </div>
+
+          <!-- Secondary: USD (if not primary) -->
+          <div class="currency-item secondary" *ngIf="config?.monedaDefaultTienda !== 'USD'">
             <span class="curr-label">Dólares (USD)</span>
             <span class="curr-val">${{ cart.getTotal() | number:'1.2-2' }}</span>
           </div>
-          <div class="currency-item secondary" *ngIf="totalBs > 0">
+
+          <!-- Secondary: BS (if not primary) -->
+          <div class="currency-item secondary" *ngIf="config?.monedaDefaultTienda !== 'BS' && totalBs > 0">
             <span class="curr-label">Bolívares (BS)</span>
             <span class="curr-val">Bs. {{ totalBs | number:'1.2-2' }}</span>
           </div>
-          <div class="currency-item secondary" *ngIf="totalCop > 0">
+
+          <!-- Secondary: COP (if not primary) -->
+          <div class="currency-item secondary" *ngIf="config?.monedaDefaultTienda !== 'COP' && totalCop > 0">
             <span class="curr-label">Pesos (COP)</span>
             <span class="curr-val">$ {{ totalCop | number:'1.0-0' }}</span>
           </div>

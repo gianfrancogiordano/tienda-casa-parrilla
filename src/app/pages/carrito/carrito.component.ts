@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { PublicApiService } from '../../services/public-api.service';
 
 @Component({
   selector: 'app-carrito',
@@ -25,7 +26,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
         <div class="card item-card" *ngFor="let item of cart.items$ | async">
           <div class="item-header">
             <h3>{{ item.productName }}</h3>
-            <span class="item-subtotal">\${{ item.subtotal | number:'1.2-2' }}</span>
+            <span class="item-subtotal">{{ api.formatPrice(item.subtotal) }}</span>
           </div>
           
           <div class="item-controls">
@@ -42,7 +43,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
         <div class="card summary-card">
           <div class="total-row">
             <span class="total-label">Total a pagar:</span>
-            <span class="total-value">\${{ cart.getTotal() | number:'1.2-2' }}</span>
+            <span class="total-value">{{ api.formatPrice(cart.getTotal()) }}</span>
           </div>
           <p class="payment-note">Pagas al recibir tu pedido 🛵</p>
           
@@ -159,6 +160,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 export class CarritoComponent implements OnInit {
   constructor(
     public cart: CartService,
+    public api: PublicApiService,
     private titleService: Title
   ) {}
 

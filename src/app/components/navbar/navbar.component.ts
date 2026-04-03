@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { PublicApiService } from '../../services/public-api.service';
 
 @Component({
   selector: 'app-navbar',
@@ -21,7 +22,7 @@ import { CartService } from '../../services/cart.service';
             <span class="cart-count" *ngIf="cart.getItemCount() > 0">
               {{ cart.getItemCount() }}
             </span>
-            <span class="cart-label">PEDIDO</span>
+            <span class="cart-label">PEDIDO — {{ api.formatPrice(cart.getTotal()) }}</span>
           </a>
         </div>
       </div>
@@ -127,5 +128,8 @@ import { CartService } from '../../services/cart.service';
   `]
 })
 export class NavbarComponent {
-  constructor(public cart: CartService) {}
+  constructor(
+    public cart: CartService,
+    public api: PublicApiService
+  ) {}
 }

@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PublicApiService } from '../../services/public-api.service';
 
 @Component({
   selector: 'app-bottom-sheet',
@@ -13,6 +14,8 @@ export class BottomSheetComponent {
   @Input() product: any;
   @Output() onConfirm = new EventEmitter<{ quantity: number; notes: string }>();
   @Output() onClose = new EventEmitter<void>();
+
+  constructor(public api: PublicApiService) {}
 
   quantity: number = 1;
   notes: string = '';

@@ -26,7 +26,7 @@ export class CheckoutComponent implements OnInit {
   constructor(
     public cart: CartService,
     public session: ClientSessionService,
-    private api: PublicApiService,
+    public api: PublicApiService,
     private router: Router,
     private titleService: Title,
     private metaService: Meta
@@ -64,7 +64,8 @@ export class CheckoutComponent implements OnInit {
 
   get totalCop(): number {
     if (!this.config || !this.config.tasaCambioUsdCop) return 0;
-    return this.cart.getTotal() * this.config.tasaCambioUsdCop;
+    const base = this.cart.getTotal() * this.config.tasaCambioUsdCop;
+    return Math.ceil(base / 1000) * 1000;
   }
 
   identify() {

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PublicApiService } from '../../services/public-api.service';
 
 @Component({
   selector: 'app-product-card',
@@ -14,7 +15,7 @@ import { CommonModule } from '@angular/common';
         <h3>{{ product.name }}</h3>
         <p class="description" *ngIf="product.description">{{ product.description }}</p>
         <div class="product-footer">
-          <span class="price">\${{ product.sellPrice | number:'1.2-2' }}</span>
+          <span class="price">{{ api.formatPrice(product.sellPrice) }}</span>
           <button class="btn-accent small-btn" (click)="onAdd.emit(product)" [disabled]="!product.available">
             {{ product.available ? 'AGREGAR' : 'NO DISPONIBLE' }}
           </button>
@@ -85,4 +86,6 @@ import { CommonModule } from '@angular/common';
 export class ProductCardComponent {
   @Input() product: any;
   @Output() onAdd = new EventEmitter<any>();
+
+  constructor(public api: PublicApiService) {}
 }

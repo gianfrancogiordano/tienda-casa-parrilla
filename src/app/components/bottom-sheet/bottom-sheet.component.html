@@ -10,7 +10,7 @@
           <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name">
           <div class="info">
             <h2 class="text-large">{{ product.name }}</h2>
-            <p class="price">{{ product.sellPrice | number:'1.2-2' }} \$</p>
+            <p class="price">{{ api.formatPrice(product.sellPrice) }}</p>
           </div>
         </div>
         <button class="close-btn" (click)="close()">✕</button>
@@ -45,7 +45,7 @@
       <!-- Actions -->
       <div class="actions">
         <button class="btn-primary" (click)="confirm()">
-          AGREGAR AL CARRITO — {{ (product.sellPrice * quantity) | number:'1.2-2' }} \$
+          AGREGAR AL CARRITO — {{ api.formatPrice(product.sellPrice * quantity) }}
         </button>
       </div>
     </div>
