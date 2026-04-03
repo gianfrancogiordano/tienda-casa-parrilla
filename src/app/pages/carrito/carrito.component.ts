@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
@@ -155,6 +156,13 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     }
   `]
 })
-export class CarritoComponent {
-  constructor(public cart: CartService) {}
+export class CarritoComponent implements OnInit {
+  constructor(
+    public cart: CartService,
+    private titleService: Title
+  ) {}
+
+  ngOnInit() {
+    this.titleService.setTitle('Mi Carrito | Casa Parrilla');
+  }
 }

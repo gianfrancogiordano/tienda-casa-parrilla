@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title, Meta } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -192,10 +193,15 @@ export class CheckoutComponent implements OnInit {
     public cart: CartService,
     public session: ClientSessionService,
     private api: PublicApiService,
-    private router: Router
+    private router: Router,
+    private titleService: Title,
+    private metaService: Meta
   ) {}
 
   ngOnInit() {
+    this.titleService.setTitle('Finalizar Pedido | Casa Parrilla');
+    this.metaService.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+
     if (this.cart.getItemCount() === 0) {
       this.router.navigate(['/']);
     }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title, Meta } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { PublicApiService } from '../../services/public-api.service';
 import { CartService } from '../../services/cart.service';
@@ -17,8 +18,8 @@ import { BottomSheetComponent } from '../../components/bottom-sheet/bottom-sheet
       <section class="banner card overflow-hidden">
         <div class="banner-overlay"></div>
         <div class="banner-content">
-          <h1 class="text-xl">¡Qué gusto verte! 🍖</h1>
-          <p class="text-large">Elige tus platos favoritos de Casa Parrilla</p>
+          <h1 class="text-xl">Casa Parrilla — La Mejor Parrilla en tu Mesa 🍖</h1>
+          <p class="text-large">Selecciona tus cortes favoritos y disfruta del sabor real de la brasa.</p>
         </div>
       </section>
 
@@ -150,10 +151,15 @@ export class CatalogoComponent implements OnInit {
 
   constructor(
     private api: PublicApiService,
-    public cart: CartService
+    public cart: CartService,
+    private titleService: Title,
+    private metaService: Meta
   ) {}
 
   ngOnInit() {
+    this.titleService.setTitle('Casa Parrilla | Menú de Carnes y Cortes Premium a Domicilio');
+    this.metaService.updateTag({ name: 'description', content: 'Disfruta del auténtico sabor de la parrilla en tu mejor momento. Pedidos online de carnes certificadas y cortes especiales. ¡Pide ahora!' });
+
     this.api.getProducts().subscribe({
       next: (data) => {
         this.products = data;

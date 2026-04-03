@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Title, Meta } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PublicApiService } from '../../services/public-api.service';
@@ -103,10 +104,15 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private api: PublicApiService
+    private api: PublicApiService,
+    private titleService: Title,
+    private metaService: Meta
   ) {}
 
   ngOnInit() {
+    this.titleService.setTitle('Sigue tu Pedido | Casa Parrilla');
+    this.metaService.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.sub = interval(15000).pipe(
