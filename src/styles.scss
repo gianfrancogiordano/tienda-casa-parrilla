@@ -1,1 +1,131 @@
-/* You can add global styles to this file, and also import other style files */
+/* Senior-Friendly Design System for Casa Parrilla Delivery */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+  /* Colors */
+  --color-primary: #C0392B;     /* Rojo parrilla */
+  --color-primary-dark: #A93226;
+  --color-accent: #F5A623;      /* Ámbar dorado */
+  --color-bg: #111111;          /* Fondo oscuro */
+  --color-surface: #1E1E1E;     /* Cards */
+  --color-text: #F0F0F0;        /* Texto principal */
+  --color-text-secondary: #BBBBBB;
+  --color-success: #27AE60;
+
+  /* Sizing - Senior Friendly (Large) */
+  --font-main: 'Outfit', sans-serif;
+  --font-size-base: 18px;       /* Minimum 18px */
+  --font-size-large: 22px;
+  --font-size-xl: 32px;
+  
+  --btn-height: 60px;           /* Large touch area */
+  --input-height: 60px;
+  --radius: 16px;
+  --container-width: 600px;     /* Mobile-first focus */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  font-size: var(--font-size-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: var(--radius);
+  height: var(--btn-height);
+  padding: 0 24px;
+  
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  width: 100%;
+}
+
+.btn-accent {
+  background-color: var(--color-accent);
+  color: black;
+}
+
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+input, textarea {
+  width: 100%;
+  background-color: rgba(255,255,255,0.05);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  color: white;
+  padding: 0 20px;
+  height: var(--input-height);
+  font-size: var(--font-size-base);
+  outline: none;
+  
+  &:focus {
+    border-color: var(--color-primary);
+  }
+}
+
+textarea {
+  height: auto;
+  min-height: 120px;
+  padding: 15px 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* Senior-friendly helper classes */
+.text-large { font-size: var(--font-size-large); }
+.text-xl { font-size: var(--font-size-xl); }
+.m-bottom-20 { margin-bottom: 20px; }
+.m-top-20 { margin-top: 20px; }
+
+/* Transitions */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,48 @@
+<div class="bottom-sheet-overlay" (click)="close()">
+  <div class="bottom-sheet-container" (click)="$event.stopPropagation()">
+    <!-- Pull Bar -->
+    <div class="pull-bar"></div>
+    
+    <div class="content" *ngIf="product">
+      <!-- Header -->
+      <div class="header">
+        <div class="product-mini">
+          <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name">
+          <div class="info">
+            <h2 class="text-large">{{ product.name }}</h2>
+            <p class="price">{{ product.sellPrice | number:'1.2-2' }} \$</p>
+          </div>
+        </div>
+        <button class="close-btn" (click)="close()">✕</button>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="section">
+        <label>¿Cuántos quieres?</label>
+        <div class="qty-control">
+          <button class="qty-btn" (click)="decrement()" [disabled]="quantity <= 1">−</button>
+          <span class="qty-value">{{ quantity }}</span>
+          <button class="qty-btn" (click)="increment()">+</button>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="section">
+        <label for="notes">Notas o modificaciones</label>
+        <textarea 
+          id="notes"
+          [(ngModel)]="notes" 
+          placeholder="Ej: Sin cebolla, término medio, etc."
+          maxlength="200"
+        ></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button class="btn-primary" (click)="confirm()">
+          AGREGAR AL CARRITO — {{ (product.sellPrice * quantity) | number:'1.2-2' }} \$
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
