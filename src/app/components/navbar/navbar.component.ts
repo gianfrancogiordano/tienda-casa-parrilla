@@ -76,12 +76,23 @@ import { CartService } from '../../services/cart.service';
       color: white;
       font-weight: 700;
       border: 2px solid transparent;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
+
+      &:hover {
+        transform: scale(1.05) rotate(-1deg);
+        background-color: var(--color-primary);
+        box-shadow: 0 8px 25px rgba(192, 57, 43, 0.4);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
     }
     .has-items {
       border-color: var(--color-primary);
       background-color: rgba(192, 57, 43, 0.1);
+      animation: pulse-cart 2s infinite;
     }
     .cart-count {
       background-color: var(--color-primary);
@@ -97,9 +108,22 @@ import { CartService } from '../../services/cart.service';
       top: -5px;
       left: -5px;
       box-shadow: 0 4px 10px rgba(192, 57, 43, 0.4);
+      z-index: 2;
     }
     .icon { font-size: 24px; }
     .cart-label { font-size: 18px; }
+
+    @keyframes pulse-cart {
+      0% {
+        box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4);
+      }
+      70% {
+        box-shadow: 0 0 0 15px rgba(192, 57, 43, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(192, 57, 43, 0);
+      }
+    }
   `]
 })
 export class NavbarComponent {

@@ -1,1 +1,160 @@
-<p>checkout works!</p>
+<app-navbar></app-navbar>
+
+<main class="container fade-in">
+  <div class="step-indicator">PASO {{ step }} DE 3</div>
+  
+  <!-- STEP 1: Identification -->
+  <section *ngIf="step === 1" class="card">
+    <h1 class="header-text">¿Quién recibe? 👤</h1>
+    <p class="instruction">Dinos tu nombre y teléfono para encontrarte.</p>
+    
+    <div class="m-bottom-20">
+      <label>TU TELÉFONO</label>
+      <input 
+        type="tel" 
+        [(ngModel)]="nameForm.phone" 
+        placeholder="Ej: 0414-1234567"
+        class="large-input"
+      >
+    </div>
+
+    <div class="m-bottom-20" *ngIf="nameForm.phone.length > 5">
+      <label>TU NOMBRE</label>
+      <input 
+        type="text" 
+        [(ngModel)]="nameForm.name" 
+        placeholder="Como quieres que te llamemos"
+        class="large-input"
+      >
+    </div>
+
+    <button 
+      (click)="identify()" 
+      class="btn-primary" 
+      [disabled]="!nameForm.phone || !nameForm.name || loading"
+    >
+      {{ loading ? 'BUSCANDO...' : 'SIGUIENTE PASO' }}
+    </button>
+  </section>
+
+  <!-- STEP 2: Address -->
+  <section *ngIf="step === 2" class="card">
+    <span *ngIf="session.client$ | async as c" class="vip-welcome">
+      ¡Hola de nuevo, {{ c.name }}! 👋
+      <span *ngIf="c.isVip" class="vip-badge">TIENES {{ c.loyaltyPoints }} PUNTOS VIP</span>
+    </span>
+    
+    <h1 class="header-text">¿A dónde lo llevamos? 🛵</h1>
+    
+    <div class="m-bottom-20">
+      <label>DIRECCIÓN EXACTA</label>
+      <textarea 
+        [(ngModel)]="addressForm.address" 
+        placeholder="Ej: Calle 5, Edificio Sol, Apto 4B"
+        class="large-input"
+      ></textarea>
+    </div>
+
+    <div class="m-bottom-20">
+      <label>NOTAS (OPCIONAL)</label>
+      <textarea 
+        [(ngModel)]="addressForm.notes" 
+        placeholder="Ej: El timbre no funciona, llámame"
+        class="large-input"
+      ></textarea>
+    </div>
+
+    <button 
+      (click)="nextStep()" 
+      class="btn-primary" 
+      [disabled]="!addressForm.address"
+    >
+      REVISAR PEDIDO
+    </button>
+    <button (click)="step = 1" class="btn-text">← VOLVER ATRÁS</button>
+  </section>
+
+  <!-- STEP 3: Confirm -->
+  <section *ngIf="step === 3" class="card">
+    <h1 class="header-text">¿Todo está bien? ✅</h1>
+    
+    <div class="review-row">
+      <span class="label">Para:</span>
+      <span class="val">{{ nameForm.name }} ({{ nameForm.phone }})</span>
+    </div>
+    <div class="review-row">
+      <span class="label">Destino:</span>
+      <span class="val">{{ addressForm.address }}</span>
+    </div>
+
+    <!-- Multi-Currency Totals -->
+    <div class="totals-review card">
+      <div class="review-row mb-0 no-border">
+        <span class="label">Total a pagar:</span>
+        <div class="currency-grid">
+          <div class="currency-item main">
+            <span class="curr-label">Dólares (USD)</span>
+            <span class="curr-val">${{ cart.getTotal() | number:'1.2-2' }}</span>
+          </div>
+          <div class="currency-item secondary" *ngIf="totalBs > 0">
+            <span class="curr-label">Bolívares (BS)</span>
+            <span class="curr-val">Bs. {{ totalBs | number:'1.2-2' }}</span>
+          </div>
+          <div class="currency-item secondary" *ngIf="totalCop > 0">
+            <span class="curr-label">Pesos (COP)</span>
+            <span class="curr-val">$ {{ totalCop | number:'1.0-0' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Digital Payment Information -->
+    <div class="payment-methods section m-top-20">
+      <h2 class="sub-header-text">Formas de Pago 💳</h2>
+      <p class="instruction small">Pide ahora y realiza tu pago por cualquiera de estos medios:</p>
+
+      <div class="methods-list">
+        <div class="payment-card">
+          <div class="method-header">
+            <span class="method-name">Bancolombia</span>
+            <span class="logo">🇨🇴</span>
+          </div>
+          <div class="method-details">
+            <p>Transferencia / Ahorros</p>
+            <strong>123-456789-01</strong>
+            <p>Titular: Casa Parrilla SAS</p>
+          </div>
+        </div>
+
+        <div class="payment-card">
+          <div class="method-header">
+            <span class="method-name">Pago Móvil</span>
+            <span class="logo">🇻🇪</span>
+          </div>
+          <div class="method-details">
+            <p>Bancamiga (0172)</p>
+            <strong>0424-7894561</strong>
+            <p>V-17852364</p>
+          </div>
+        </div>
+
+        <div class="payment-card">
+          <div class="method-header">
+            <span class="method-name">Zelle / Binance</span>
+            <span class="logo">🌍</span>
+          </div>
+          <div class="method-details">
+            <strong>pagos&#64;casaparrilla.com</strong>
+            <p>Titular: Casa Parrilla LLC</p>
+            <p class="pay-id">BEP20: 123456789</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button (click)="confirmOrder()" class="btn-primary confirm-btn m-top-20" [disabled]="loading">
+      {{ loading ? 'ENVIANDO...' : '¡SI, PEDIR AHORA! 🍖' }}
+    </button>
+    <button (click)="step = 2" class="btn-text" *ngIf="!loading">← HACER CAMBIOS</button>
+  </section>
+</main>

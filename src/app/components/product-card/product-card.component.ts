@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
       </div>
       <div class="product-info">
         <h3>{{ product.name }}</h3>
-        <p class="description">{{ product.description }}</p>
+        <p class="description" *ngIf="product.description">{{ product.description }}</p>
         <div class="product-footer">
           <span class="price">\${{ product.sellPrice | number:'1.2-2' }}</span>
           <button class="btn-accent small-btn" (click)="onAdd.emit(product)" [disabled]="!product.available">

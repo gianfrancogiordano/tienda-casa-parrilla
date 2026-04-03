@@ -16,6 +16,11 @@
         <button class="close-btn" (click)="close()">✕</button>
       </div>
 
+      <!-- Product Description -->
+      <div class="description-section" *ngIf="product.description">
+        <p class="description">{{ product.description }}</p>
+      </div>
+
       <!-- Quantity Selector -->
       <div class="section">
         <label>¿Cuántos quieres?</label>

@@ -1,0 +1,152 @@
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 20px;
+}
+.header-text {
+  font-size: var(--font-size-xl);
+  margin-bottom: 10px;
+}
+.sub-header-text {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.step-indicator {
+  text-align: center;
+  font-weight: 800;
+  color: var(--color-accent);
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+.instruction {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  margin-bottom: 30px;
+}
+.instruction.small {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+.vip-welcome {
+  display: block;
+  background-color: rgba(245, 166, 35, 0.1);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+.vip-badge {
+  display: block;
+  font-size: 14px;
+  margin-top: 5px;
+}
+.btn-text {
+  background: none;
+  color: var(--color-text-secondary);
+  width: 100%;
+  margin-top: 15px;
+  height: 48px;
+}
+.review-row {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.review-row.no-border {
+  border: none;
+}
+.review-row .label {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.review-row .val {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Currency Grid */
+.totals-review {
+  background: rgba(192, 57, 43, 0.1);
+  border: 1px solid rgba(192, 57, 43, 0.2);
+  padding: 20px;
+}
+.currency-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.currency-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.main .curr-label {
+  font-size: 16px;
+  color: white;
+}
+.main .curr-val {
+  font-size: 28px;
+  color: var(--color-success);
+  font-weight: 800;
+}
+.secondary .curr-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+.secondary .curr-val {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Payment Methods */
+.payment-methods {
+  margin-top: 30px;
+}
+.methods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.payment-card {
+  background-color: var(--color-surface);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+}
+.method-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 8px;
+}
+.method-name {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+.method-details p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+.method-details strong {
+  display: block;
+  font-size: 18px;
+  margin: 4px 0;
+  color: white;
+}
+.pay-id {
+  font-size: 12px !important;
+  opacity: 0.6;
+}
+
+.confirm-btn {
+  height: 80px;
+  font-size: 24px;
+}
