@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { ClientSessionService } from '../../services/client-session.service';
 import { PublicApiService } from '../../services/public-api.service';
+import { OrderPersistenceService } from '../../services/order-persistence.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 
 @Component({
@@ -27,6 +28,7 @@ export class CheckoutComponent implements OnInit {
     public cart: CartService,
     public session: ClientSessionService,
     public api: PublicApiService,
+    private persistence: OrderPersistenceService,
     private router: Router,
     private titleService: Title,
     private metaService: Meta
@@ -107,6 +109,7 @@ export class CheckoutComponent implements OnInit {
     this.api.createOrder(orderData).subscribe({
       next: (res) => {
         this.cart.clearCart();
+        this.persistence.saveOrderId(res._id);
         this.router.navigate(['/pedido', res._id]);
       },
       error: (err) => {

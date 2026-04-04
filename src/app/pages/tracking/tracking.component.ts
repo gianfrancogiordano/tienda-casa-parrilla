@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PublicApiService } from '../../services/public-api.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { PaymentModalComponent } from '../../components/payment-modal/payment-modal.component';
+import { OrderPersistenceService } from '../../services/order-persistence.service';
 import { interval, Subscription, switchMap, startWith } from 'rxjs';
 
 @Component({
@@ -155,6 +156,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     public api: PublicApiService,
+    private persistence: OrderPersistenceService,
     private titleService: Title,
     private metaService: Meta
   ) { }
@@ -172,10 +174,17 @@ export class TrackingComponent implements OnInit, OnDestroy {
         next: (data) => {
           this.order = data;
           this.loading = false;
+          
+          // Si el pedido terminó, liberamos al cliente
+          if (this.persistence.isOrderFinished(data.status)) {
+            this.persistence.clearOrderId();
+          }
         },
         error: () => {
           this.error = true;
           this.loading = false;
+          // Si el pedido no existe, limpiamos por si acaso
+          this.persistence.clearOrderId();
         }
       });
     }
@@ -186,7 +195,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     switch (this.order.status) {
       case 'Recibido': return 20;
       case 'En Cocina': return 50;
-      case 'Listo': return 80;
+      case 'Lista': return 80;
       case 'En Camino': return 90;
       case 'Entregado':
       case 'Pagado': return 100;

@@ -22,7 +22,10 @@ import { PublicApiService } from '../../services/public-api.service';
             <span class="cart-count" *ngIf="cart.getItemCount() > 0">
               {{ cart.getItemCount() }}
             </span>
-            <span class="cart-label">PEDIDO — {{ api.formatPrice(cart.getTotal()) }}</span>
+            <div class="cart-label">
+              <span class="label-top">MI PEDIDO</span>
+              <span class="label-amount">{{ api.formatPrice(cart.getTotal()) }}</span>
+            </div>
           </a>
         </div>
       </div>
@@ -112,7 +115,24 @@ import { PublicApiService } from '../../services/public-api.service';
       z-index: 2;
     }
     .icon { font-size: 24px; }
-    .cart-label { font-size: 18px; }
+    .cart-label { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: flex-start;
+      line-height: 1.1; 
+    }
+    .label-top {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      opacity: 0.8;
+      text-transform: uppercase;
+    }
+    .label-amount {
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+    }
 
     @keyframes pulse-cart {
       0% {
