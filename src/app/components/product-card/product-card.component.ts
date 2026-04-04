@@ -7,7 +7,7 @@ import { PublicApiService } from '../../services/public-api.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="card product-card" [class.not-available]="!product.available">
+    <div (click)="onAdd.emit(product)" class="card product-card" [class.not-available]="!product.available">
       <div class="product-image" *ngIf="product.imageUrl">
         <img [src]="product.imageUrl" [alt]="product.name" loading="lazy">
       </div>
@@ -17,7 +17,7 @@ import { PublicApiService } from '../../services/public-api.service';
         <div class="product-footer">
           <span class="price">{{ api.formatPrice(product.sellPrice) }}</span>
           <button class="btn-accent small-btn" (click)="onAdd.emit(product)" [disabled]="!product.available">
-            {{ product.available ? 'AGREGAR' : 'NO DISPONIBLE' }}
+            {{ product.available ? 'VER MÁS' : 'NO DISPONIBLE' }}
           </button>
         </div>
       </div>
@@ -87,5 +87,5 @@ export class ProductCardComponent {
   @Input() product: any;
   @Output() onAdd = new EventEmitter<any>();
 
-  constructor(public api: PublicApiService) {}
+  constructor(public api: PublicApiService) { }
 }

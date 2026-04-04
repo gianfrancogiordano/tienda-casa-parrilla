@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class PublicApiService {
   private apiUrl = `${environment.apiUrl}/public`;
-  
+
   private configSubject = new BehaviorSubject<any>(null);
   config$ = this.configSubject.asObservable();
 
@@ -51,7 +51,7 @@ export class PublicApiService {
     if (!config) return `$${usdAmount.toFixed(2)}`;
 
     const moneda = config.monedaDefaultTienda || 'USD';
-    
+
     switch (moneda) {
       case 'BS':
         const bs = usdAmount * (config.tasaCambioUsdBs || 1);
@@ -59,7 +59,7 @@ export class PublicApiService {
       case 'COP':
         // Redondeo para arriba al mil más cercano por el cono monetario de Colombia
         const cop = Math.ceil((usdAmount * (config.tasaCambioUsdCop || 1)) / 1000) * 1000;
-        return `$ ${cop.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`;
+        return `COP$ ${cop.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`;
       default:
         return `$${usdAmount.toFixed(2)}`;
     }

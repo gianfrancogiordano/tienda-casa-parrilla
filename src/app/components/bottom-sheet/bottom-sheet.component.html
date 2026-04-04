@@ -45,7 +45,8 @@
       <!-- Actions -->
       <div class="actions">
         <button class="btn-primary" (click)="confirm()">
-          AGREGAR AL CARRITO — {{ api.formatPrice(product.sellPrice * quantity) }}
+          <span class="btn-label">AGREGAR AL CARRITO</span>
+          <span class="btn-price">{{ api.formatPrice(product.sellPrice * quantity) }}</span>
         </button>
       </div>
     </div>
