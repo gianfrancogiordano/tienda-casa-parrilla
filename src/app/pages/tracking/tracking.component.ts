@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PublicApiService } from '../../services/public-api.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { PaymentModalComponent } from '../../components/payment-modal/payment-modal.component';
 import { interval, Subscription, switchMap, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-tracking',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, PaymentModalComponent],
   template: `
     <app-navbar></app-navbar>
 
@@ -24,12 +25,28 @@ import { interval, Subscription, switchMap, startWith } from 'rxjs';
         </div>
 
         <div class="details card shadow-none bg-darker">
-          <p class="text-large">Total a pagar: <strong>\${{ order.total | number:'1.2-2' }}</strong></p>
-          <p class="m-top-20">Recuerda tener listo el efectivo o pago móvil al recibirlo. 🛵</p>
+          <p class="text-large">Total a pagar: <strong>{{ api.formatPrice(order.total) }}</strong></p>
+          <p class="m-top-20">¿Cómo deseas pagar? Tienes nuestros datos disponibles aquí:</p>
+          <button (click)="showPaymentModal = true" class="btn-accent small-btn m-top-10">
+            VER DATOS DE PAGO 💳
+          </button>
+          
+          <div class="m-top-30" *ngIf="getWhatsAppLink()">
+            <p>¿Quieres hacer un cambio en tu pedido?</p>
+            <a [href]="getWhatsAppLink()" target="_blank" class="btn-whatsapp small-btn m-top-10">
+              CONTACTAR WHATSAPP 📱
+            </a>
+          </div>
         </div>
 
         <button routerLink="/" class="btn-primary m-top-20">VOLVER AL INICIO</button>
       </div>
+
+      <app-payment-modal
+        *ngIf="showPaymentModal"
+        [paymentMethods]="api.metodosPago"
+        (onClose)="showPaymentModal = false"
+      ></app-payment-modal>
 
       <div *ngIf="loading && !order" class="status-card card skeleton-status">
         <div class="skeleton-circle"></div>
@@ -85,9 +102,41 @@ import { interval, Subscription, switchMap, startWith } from 'rxjs';
     }
     .details {
       background-color: rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
     .bg-darker { background-color: #000; }
     .shadow-none { box-shadow: none; border-color: rgba(255,255,255,0.05); }
+    .small-btn { 
+      height: 52px; 
+      padding: 0 32px; 
+      font-size: 15px; 
+      font-weight: 800; 
+      width: auto; 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 8px; 
+      border-radius: 26px; /* Pill look */
+      letter-spacing: 0.5px;
+    }
+    .m-top-10 { margin-top: 10px; }
+    .m-top-30 { margin-top: 30px; }
+    .btn-whatsapp { 
+      background-color: #25D366; 
+      color: white; 
+      border: none; 
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+      transition: all 0.2s ease;
+    }
+    .btn-whatsapp:hover {
+      background-color: #128C7E;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    }
     
     /* Skeletons */
     .skeleton-status { height: 400px; animation: pulse 1.5s infinite; }
@@ -100,14 +149,15 @@ export class TrackingComponent implements OnInit, OnDestroy {
   order: any = null;
   loading = true;
   error = false;
+  showPaymentModal = false;
   private sub: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private api: PublicApiService,
+    public api: PublicApiService,
     private titleService: Title,
     private metaService: Meta
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.titleService.setTitle('Sigue tu Pedido | Casa Parrilla');
@@ -142,6 +192,18 @@ export class TrackingComponent implements OnInit, OnDestroy {
       case 'Pagado': return 100;
       default: return 10;
     }
+  }
+
+  getWhatsAppLink(): string {
+    const currentConfig = this.api.currentConfig;
+    if (!this.order || !currentConfig?.telefono) return '';
+
+    const phone = currentConfig.telefono.replace(/\D/g, '');
+    const orderNum = this.order.orderNumber || this.order._id;
+    const clientName = this.order.client?.name || this.order.customerName || 'Cliente';
+
+    const message = `Hola, quiero información sobre mi pedido n° ${orderNum} y mi nombre es: ${clientName}`;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   }
 
   ngOnDestroy() {

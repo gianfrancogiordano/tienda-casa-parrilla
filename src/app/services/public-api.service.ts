@@ -12,6 +12,10 @@ export class PublicApiService {
   private configSubject = new BehaviorSubject<any>(null);
   config$ = this.configSubject.asObservable();
 
+  get currentConfig() {
+    return this.configSubject.value;
+  }
+
   constructor(private http: HttpClient) {
     this.refreshConfig();
   }
@@ -60,4 +64,34 @@ export class PublicApiService {
         return `$${usdAmount.toFixed(2)}`;
     }
   }
+
+  metodosPago = [
+    {
+      nombre: 'Bancolombia',
+      logo: '🇨🇴',
+      detalles: [
+        { tipo: 'p', texto: 'Transferencia / Ahorros' },
+        { tipo: 'strong', texto: '82428072002' },
+        { tipo: 'p', texto: 'Titular: Gianfranco Giordano' }
+      ]
+    },
+    {
+      nombre: 'Pago Móvil',
+      logo: '🇻🇪',
+      detalles: [
+        { tipo: 'p', texto: 'Venezuela (0102)' },
+        { tipo: 'strong', texto: '04247697244' },
+        { tipo: 'p', texto: 'V-17982628' }
+      ]
+    },
+    {
+      nombre: 'Binance',
+      logo: '🌍',
+      detalles: [
+        { tipo: 'strong', texto: 'gianfrancogiordano@gmail.com / ggiordano' },
+        { tipo: 'p', texto: 'Titular: Gianfranco Giordano' },
+        { tipo: 'p', texto: 'ID de Binance: 488344726', class: 'pay-id' }
+      ]
+    }
+  ];
 }

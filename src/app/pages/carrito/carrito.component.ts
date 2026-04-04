@@ -45,10 +45,10 @@ import { PublicApiService } from '../../services/public-api.service';
             <span class="total-label">Total a pagar:</span>
             <span class="total-value">{{ api.formatPrice(cart.getTotal()) }}</span>
           </div>
-          <p class="payment-note">Pagas al recibir tu pedido 🛵</p>
+          <p class="payment-note">Completemos tus datos 🛵</p>
           
           <button routerLink="/checkout" class="btn-primary confirm-btn">
-            CONTINUAR AL PAGO
+            CONTINUAR
           </button>
           <button routerLink="/" class="btn-secondary m-top-20">
             AGREGAR MÁS PLATOS
@@ -162,7 +162,7 @@ export class CarritoComponent implements OnInit {
     public cart: CartService,
     public api: PublicApiService,
     private titleService: Title
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.titleService.setTitle('Mi Carrito | Casa Parrilla');

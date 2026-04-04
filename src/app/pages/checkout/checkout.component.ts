@@ -19,7 +19,7 @@ export class CheckoutComponent implements OnInit {
   step = 1;
   loading = false;
   config: any = null;
-  
+
   nameForm = { phone: '', name: '' };
   addressForm = { address: '', notes: '' };
 
@@ -30,7 +30,7 @@ export class CheckoutComponent implements OnInit {
     private router: Router,
     private titleService: Title,
     private metaService: Meta
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.titleService.setTitle('Finalizar Pedido | Casa Parrilla');
@@ -47,7 +47,7 @@ export class CheckoutComponent implements OnInit {
       },
       error: (err) => console.error('Error cargando tasas:', err)
     });
-    
+
     // Si ya inició sesión, saltar al paso 2
     this.session.client$.subscribe(c => {
       if (c && this.step === 1) {
@@ -115,5 +115,9 @@ export class CheckoutComponent implements OnInit {
         // Podríamos agregar un SweetAlert aquí luego
       }
     });
+  }
+
+  get metodosPago() {
+    return this.api.metodosPago;
   }
 }

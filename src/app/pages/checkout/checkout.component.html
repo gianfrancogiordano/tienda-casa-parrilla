@@ -127,39 +127,16 @@
       <p class="instruction small">Pide ahora y realiza tu pago por cualquiera de estos medios:</p>
 
       <div class="methods-list">
-        <div class="payment-card">
+        <div class="payment-card" *ngFor="let mp of metodosPago">
           <div class="method-header">
-            <span class="method-name">Bancolombia</span>
-            <span class="logo">🇨🇴</span>
+            <span class="method-name">{{ mp.nombre }}</span>
+            <span class="logo">{{ mp.logo }}</span>
           </div>
           <div class="method-details">
-            <p>Transferencia / Ahorros</p>
-            <strong>123-456789-01</strong>
-            <p>Titular: Casa Parrilla SAS</p>
-          </div>
-        </div>
-
-        <div class="payment-card">
-          <div class="method-header">
-            <span class="method-name">Pago Móvil</span>
-            <span class="logo">🇻🇪</span>
-          </div>
-          <div class="method-details">
-            <p>Bancamiga (0172)</p>
-            <strong>0424-7894561</strong>
-            <p>V-17852364</p>
-          </div>
-        </div>
-
-        <div class="payment-card">
-          <div class="method-header">
-            <span class="method-name">Zelle / Binance</span>
-            <span class="logo">🌍</span>
-          </div>
-          <div class="method-details">
-            <strong>pagos&#64;casaparrilla.com</strong>
-            <p>Titular: Casa Parrilla LLC</p>
-            <p class="pay-id">BEP20: 123456789</p>
+            <ng-container *ngFor="let det of mp.detalles">
+              <p *ngIf="det.tipo === 'p'" [class]="det.class">{{ det.texto }}</p>
+              <strong *ngIf="det.tipo === 'strong'" [class]="det.class">{{ det.texto }}</strong>
+            </ng-container>
           </div>
         </div>
       </div>
