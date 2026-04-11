@@ -39,7 +39,9 @@ export class PublicApiService {
   }
 
   createOrder(orderData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/orders`, orderData);
+    const fcmToken = localStorage.getItem('cp_fcm_token');
+    const payload = { ...orderData, fcmToken: fcmToken ?? null };
+    return this.http.post(`${this.apiUrl}/orders`, payload);
   }
 
   getOrderStatus(orderId: string): Observable<any> {

@@ -7,6 +7,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { PaymentModalComponent } from '../../components/payment-modal/payment-modal.component';
 import { OrderPersistenceService } from '../../services/order-persistence.service';
 import { interval, Subscription, switchMap, startWith } from 'rxjs';
+import { PushNotificationsService } from '../../services/push-notifications.service';
 
 @Component({
   selector: 'app-tracking',
@@ -32,6 +33,13 @@ import { interval, Subscription, switchMap, startWith } from 'rxjs';
             VER DATOS DE PAGO 💳
           </button>
           
+          <div class="m-top-30 notification-cta" *ngIf="showNotificationCta">
+            <p class="notif-hint">🔔 ¿Quieres que te avisemos cuando tu pedido llegue?</p>
+            <button (click)="activateNotifications()" class="btn-notif small-btn m-top-10">
+              ACTIVAR NOTIFICACIONES
+            </button>
+          </div>
+
           <div class="m-top-30" *ngIf="getWhatsAppLink()">
             <p>¿Quieres hacer un cambio en tu pedido?</p>
             <a [href]="getWhatsAppLink()" target="_blank" class="btn-whatsapp small-btn m-top-10">
@@ -144,6 +152,17 @@ import { interval, Subscription, switchMap, startWith } from 'rxjs';
     .skeleton-circle { width: 80px; height: 80px; border-radius: 50%; background: #333; margin: 0 auto 20px; }
     .skeleton-line { height: 30px; width: 60%; background: #333; margin: 0 auto; border-radius: 15px; }
     @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 0.3; } 100% { opacity: 0.6; } }
+    .notification-cta { text-align: center; }
+    .notif-hint { color: #94a3b8; font-size: 14px; margin-bottom: 8px; }
+    .btn-notif {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-notif:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5); }
   `]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
@@ -151,12 +170,14 @@ export class TrackingComponent implements OnInit, OnDestroy {
   loading = true;
   error = false;
   showPaymentModal = false;
+  showNotificationCta = false;
   private sub: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
     public api: PublicApiService,
     private persistence: OrderPersistenceService,
+    private pushService: PushNotificationsService,
     private titleService: Title,
     private metaService: Meta
   ) { }
@@ -174,19 +195,32 @@ export class TrackingComponent implements OnInit, OnDestroy {
         next: (data) => {
           this.order = data;
           this.loading = false;
-          
+
+          // Mostrar CTA de notificaciones si el pedido está activo y no hay permiso aún
+          if (this.persistence.isOrderActive(data.status)) {
+            this.showNotificationCta = Notification.permission === 'default';
+          }
+
           // Si el pedido terminó, liberamos al cliente
           if (this.persistence.isOrderFinished(data.status)) {
             this.persistence.clearOrderId();
+            this.showNotificationCta = false;
           }
         },
         error: () => {
           this.error = true;
           this.loading = false;
-          // Si el pedido no existe, limpiamos por si acaso
           this.persistence.clearOrderId();
         }
       });
+    }
+  }
+
+  async activateNotifications(): Promise<void> {
+    const token = await this.pushService.requestPermission();
+    this.showNotificationCta = false;
+    if (token) {
+      console.log('[Tracking] Push activado ✅');
     }
   }
 
