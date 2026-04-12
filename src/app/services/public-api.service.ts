@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export interface RestaurantStatus {
+  isOpen: boolean;
+  nextOpening: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,12 +17,24 @@ export class PublicApiService {
   private configSubject = new BehaviorSubject<any>(null);
   config$ = this.configSubject.asObservable();
 
+  private statusSubject = new BehaviorSubject<RestaurantStatus>({ isOpen: true, nextOpening: null });
+  status$ = this.statusSubject.asObservable();
+
   get currentConfig() {
     return this.configSubject.value;
   }
 
+  get currentStatus(): RestaurantStatus {
+    return this.statusSubject.value;
+  }
+
   constructor(private http: HttpClient) {
     this.refreshConfig();
+    this.refreshStatus();
+  }
+
+  refreshStatus() {
+    this.getStatus().subscribe(s => this.statusSubject.next(s));
   }
 
   refreshConfig() {
@@ -27,6 +44,12 @@ export class PublicApiService {
   getConfig(): Observable<any> {
     return this.http.get(`${this.apiUrl}/configuracion`).pipe(
       tap(c => this.configSubject.next(c))
+    );
+  }
+
+  getStatus(): Observable<RestaurantStatus> {
+    return this.http.get<RestaurantStatus>(`${this.apiUrl}/status`).pipe(
+      tap(s => this.statusSubject.next(s))
     );
   }
 

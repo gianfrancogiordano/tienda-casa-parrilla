@@ -150,3 +150,15 @@
   height: 80px;
   font-size: 24px;
 }
+
+.closed-alert {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+}

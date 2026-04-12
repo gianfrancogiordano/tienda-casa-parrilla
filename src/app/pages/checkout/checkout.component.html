@@ -142,8 +142,14 @@
       </div>
     </div>
 
-    <button (click)="confirmOrder()" class="btn-primary confirm-btn m-top-20" [disabled]="loading">
-      {{ loading ? 'ENVIANDO...' : '¡SI, PEDIR AHORA! 🍖' }}
+    <!-- Error de restaurante cerrado -->
+    <div *ngIf="errorMsg" class="closed-alert">
+      🔴 {{ errorMsg }}
+    </div>
+
+    <button (click)="confirmOrder()" class="btn-primary confirm-btn m-top-20"
+            [disabled]="loading || (status && !status.isOpen)">
+      {{ loading ? 'ENVIANDO...' : (status && !status.isOpen) ? '🔴 RESTAURANTE CERRADO' : '¡SI, PEDIR AHORA! 🍖' }}
     </button>
     <button (click)="step = 2" class="btn-text" *ngIf="!loading">← HACER CAMBIOS</button>
   </section>

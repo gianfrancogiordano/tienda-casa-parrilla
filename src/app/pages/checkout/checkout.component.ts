@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { ClientSessionService } from '../../services/client-session.service';
-import { PublicApiService } from '../../services/public-api.service';
+import { PublicApiService, RestaurantStatus } from '../../services/public-api.service';
 import { OrderPersistenceService } from '../../services/order-persistence.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 
@@ -20,6 +20,8 @@ export class CheckoutComponent implements OnInit {
   step = 1;
   loading = false;
   config: any = null;
+  status: RestaurantStatus | null = null;
+  errorMsg = '';
 
   nameForm = { phone: '', name: '' };
   addressForm = { address: '', notes: '' };
@@ -41,6 +43,10 @@ export class CheckoutComponent implements OnInit {
     if (this.cart.getItemCount() === 0) {
       this.router.navigate(['/']);
     }
+
+    // Verificar si el restaurante está abierto
+    this.api.status$.subscribe(s => this.status = s);
+    this.api.refreshStatus();
 
     // Cargar tasas de cambio
     this.api.getConfig().subscribe({
@@ -87,6 +93,14 @@ export class CheckoutComponent implements OnInit {
   }
 
   confirmOrder() {
+    // Verificación del lado del cliente
+    if (this.status && !this.status.isOpen) {
+      this.errorMsg = this.status.nextOpening
+        ? `El restaurante está cerrado. Abrimos ${this.status.nextOpening}.`
+        : 'El restaurante está cerrado por hoy.';
+      return;
+    }
+
     const client = this.session.currentClient;
     const items = this.cart.currentItems;
 
@@ -96,6 +110,7 @@ export class CheckoutComponent implements OnInit {
     }
 
     this.loading = true;
+    this.errorMsg = '';
 
     const orderData = {
       clientId: client.clientId,
@@ -113,9 +128,12 @@ export class CheckoutComponent implements OnInit {
         this.router.navigate(['/pedido', res._id]);
       },
       error: (err) => {
-        console.error('Error al crear pedido:', err);
         this.loading = false;
-        // Podríamos agregar un SweetAlert aquí luego
+        if (err.status === 403) {
+          this.errorMsg = err.error?.message || 'El restaurante está cerrado en este momento.';
+        } else {
+          this.errorMsg = 'Hubo un error al enviar tu pedido. Intenta de nuevo.';
+        }
       }
     });
   }

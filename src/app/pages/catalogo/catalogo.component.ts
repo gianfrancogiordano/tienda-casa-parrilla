@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { PublicApiService } from '../../services/public-api.service';
+import { RouterModule } from '@angular/router';
+import { PublicApiService, RestaurantStatus } from '../../services/public-api.service';
 import { CartService } from '../../services/cart.service';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -10,10 +11,18 @@ import { BottomSheetComponent } from '../../components/bottom-sheet/bottom-sheet
 @Component({
   selector: 'app-catalogo',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, NavbarComponent, BottomSheetComponent],
+  imports: [CommonModule, RouterModule, ProductCardComponent, NavbarComponent, BottomSheetComponent],
   template: `
     <app-navbar></app-navbar>
-    
+
+    <!-- Banner de restaurante cerrado -->
+    <div *ngIf="status && !status.isOpen" class="closed-banner">
+      <span class="closed-icon">🔴</span>
+      <div>
+        <strong>Estamos cerrados por ahora</strong>
+        <span *ngIf="status.nextOpening"> — Abrimos {{ status.nextOpening }}</span>
+      </div>
+    </div>
     <main class="container fade-in">
       <section class="banner card overflow-hidden">
         <div class="banner-overlay"></div>
@@ -137,6 +146,20 @@ import { BottomSheetComponent } from '../../components/bottom-sheet/bottom-sheet
       50% { opacity: 0.3; }
       100% { opacity: 0.6; }
     }
+    .closed-banner {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 0.875rem 1.25rem;
+      font-size: 0.9rem;
+      border-bottom: 2px solid #fca5a5;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .closed-icon { font-size: 1.25rem; }
   `]
 })
 export class CatalogoComponent implements OnInit {
@@ -144,6 +167,7 @@ export class CatalogoComponent implements OnInit {
   categories: string[] = ['Todos'];
   selectedCategory: string = 'Todos';
   loading: boolean = true;
+  status: RestaurantStatus | null = null;
 
   // Modal State
   showModal: boolean = false;
@@ -159,6 +183,10 @@ export class CatalogoComponent implements OnInit {
   ngOnInit() {
     this.titleService.setTitle('Casa Parrilla | Menú de Carnes y Cortes Premium a Domicilio');
     this.metaService.updateTag({ name: 'description', content: 'Disfruta del auténtico sabor de la parrilla en tu mejor momento. Pedidos online de carnes certificadas y cortes especiales. ¡Pide ahora!' });
+
+    // Verificar estado del restaurante
+    this.api.status$.subscribe(s => this.status = s);
+    this.api.refreshStatus();
 
     this.api.getProducts().subscribe({
       next: (data) => {
