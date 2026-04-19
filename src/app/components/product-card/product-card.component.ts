@@ -15,7 +15,7 @@ import { PublicApiService } from '../../services/public-api.service';
         <h3>{{ product.name }}</h3>
         <p class="description" *ngIf="product.description">{{ product.description }}</p>
         <div class="product-footer">
-          <span class="price">{{ api.formatPrice(product.sellPrice) }}</span>
+          <span class="price">{{ api.formatProductPrice(product) }}</span>
           <button class="btn-accent small-btn" (click)="onAdd.emit(product)" [disabled]="!product.available">
             {{ product.available ? 'VER MÁS' : 'NO DISPONIBLE' }}
           </button>

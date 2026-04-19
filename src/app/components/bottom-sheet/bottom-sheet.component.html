@@ -10,7 +10,7 @@
           <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name">
           <div class="info">
             <h2 class="text-large">{{ product.name }}</h2>
-            <p class="price">{{ api.formatPrice(product.sellPrice) }}</p>
+            <p class="price">{{ api.formatProductPrice(product) }}</p>
           </div>
         </div>
         <button class="close-btn" (click)="close()">✕</button>

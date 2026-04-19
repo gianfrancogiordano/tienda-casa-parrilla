@@ -7,6 +7,8 @@ export interface CartItem {
   quantity: number;
   unitPrice: number;
   subtotal: number;
+  priceBs?: number;
+  priceCop?: number;
   imageUrl?: string;
   requiresKitchen?: boolean;
   notes?: string;
@@ -61,6 +63,8 @@ export class CartService {
         quantity: quantity,
         unitPrice: product.sellPrice,
         subtotal: product.sellPrice * quantity,
+        priceBs: product.priceBs || 0,
+        priceCop: product.priceCop || 0,
         imageUrl: product.imageUrl,
         requiresKitchen: product.requiresKitchen ?? true,
         notes: notes

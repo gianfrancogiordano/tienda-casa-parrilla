@@ -20,6 +20,21 @@ export class PublicApiService {
   private statusSubject = new BehaviorSubject<RestaurantStatus>({ isOpen: true, nextOpening: null });
   status$ = this.statusSubject.asObservable();
 
+  // ─── Currency Selection ────────────────────────────────────────────────────
+  private currencySubject = new BehaviorSubject<string>(
+    localStorage.getItem('cp_moneda') || 'COP'
+  );
+  selectedCurrency$ = this.currencySubject.asObservable();
+
+  get selectedCurrency(): string {
+    return this.currencySubject.value;
+  }
+
+  setCurrency(currency: string): void {
+    this.currencySubject.next(currency);
+    localStorage.setItem('cp_moneda', currency);
+  }
+
   get currentConfig() {
     return this.configSubject.value;
   }
@@ -71,13 +86,50 @@ export class PublicApiService {
     return this.http.get(`${this.apiUrl}/orders/${orderId}`);
   }
 
+  /**
+   * Format a product's price using the pre-calculated priceBs/priceCop fields.
+   * Falls back to on-the-fly conversion if the product doesn't have those fields yet.
+   */
+  formatProductPrice(product: any): string {
+    const currency = this.selectedCurrency;
+
+    switch (currency) {
+      case 'BS':
+        if (product.priceBs) {
+          return `Bs. ${product.priceBs.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+        // Fallback: calculate from sellPrice
+        const config = this.configSubject.value;
+        if (config?.tasaCambioUsdBs) {
+          const bs = product.sellPrice * config.tasaCambioUsdBs;
+          return `Bs. ${bs.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+        return `$${product.sellPrice.toFixed(2)}`;
+      case 'COP':
+        if (product.priceCop) {
+          return `COP$ ${product.priceCop.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`;
+        }
+        // Fallback
+        const cfg = this.configSubject.value;
+        if (cfg?.tasaCambioUsdCop) {
+          const cop = Math.ceil((product.sellPrice * cfg.tasaCambioUsdCop) / 1000) * 1000;
+          return `COP$ ${cop.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`;
+        }
+        return `$${product.sellPrice.toFixed(2)}`;
+      default:
+        return `$${product.sellPrice.toFixed(2)}`;
+    }
+  }
+
+  /**
+   * Format a raw USD amount using on-the-fly conversion (for totals, cart, etc).
+   */
   formatPrice(usdAmount: number): string {
+    const currency = this.selectedCurrency;
     const config = this.configSubject.value;
     if (!config) return `$${usdAmount.toFixed(2)}`;
 
-    const moneda = config.monedaDefaultTienda || 'USD';
-
-    switch (moneda) {
+    switch (currency) {
       case 'BS':
         const bs = usdAmount * (config.tasaCambioUsdBs || 1);
         return `Bs. ${bs.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -120,3 +172,4 @@ export class PublicApiService {
     }
   ];
 }
+

@@ -92,30 +92,30 @@
       <div class="review-row mb-0 no-border">
         <span class="label">Total a pagar:</span>
         <div class="currency-grid">
-          <!-- Primary Currency (Dynamic) -->
+          <!-- Primary: Selected Currency -->
           <div class="currency-item main">
             <span class="curr-label">
-              {{ config?.monedaDefaultTienda === 'BS' ? 'Bolívares (BS)' : config?.monedaDefaultTienda === 'COP' ? 'Pesos (COP)' : 'Dólares (USD)' }}
+              {{ api.selectedCurrency === 'BS' ? 'Bolívares (BS)' : api.selectedCurrency === 'COP' ? 'Pesos (COP)' : 'Dólares (USD)' }}
             </span>
             <span class="curr-val">{{ api.formatPrice(cart.getTotal()) }}</span>
           </div>
 
-          <!-- Secondary: USD (if not primary) -->
-          <div class="currency-item secondary" *ngIf="config?.monedaDefaultTienda !== 'USD'">
+          <!-- Secondary: USD (if not selected) -->
+          <div class="currency-item secondary" *ngIf="api.selectedCurrency !== 'USD'">
             <span class="curr-label">Dólares (USD)</span>
             <span class="curr-val">${{ cart.getTotal() | number:'1.2-2' }}</span>
           </div>
 
-          <!-- Secondary: BS (if not primary) -->
-          <div class="currency-item secondary" *ngIf="config?.monedaDefaultTienda !== 'BS' && totalBs > 0">
+          <!-- Secondary: BS (if not selected) -->
+          <div class="currency-item secondary" *ngIf="api.selectedCurrency !== 'BS' && totalBs > 0">
             <span class="curr-label">Bolívares (BS)</span>
             <span class="curr-val">Bs. {{ totalBs | number:'1.2-2' }}</span>
           </div>
 
-          <!-- Secondary: COP (if not primary) -->
-          <div class="currency-item secondary" *ngIf="config?.monedaDefaultTienda !== 'COP' && totalCop > 0">
+          <!-- Secondary: COP (if not selected) -->
+          <div class="currency-item secondary" *ngIf="api.selectedCurrency !== 'COP' && totalCop > 0">
             <span class="curr-label">Pesos (COP)</span>
-            <span class="curr-val">$ {{ totalCop | number:'1.0-0' }}</span>
+            <span class="curr-val">COP$ {{ totalCop | number:'1.0-0' }}</span>
           </div>
         </div>
       </div>

@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
 import { PublicApiService } from '../../services/public-api.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   template: `
     <nav class="navbar">
       <div class="nav-content">
@@ -17,6 +18,15 @@ import { PublicApiService } from '../../services/public-api.service';
         </a>
         
         <div class="nav-actions">
+          <!-- Currency Selector -->
+          <select class="currency-select"
+                  [ngModel]="api.selectedCurrency"
+                  (ngModelChange)="onCurrencyChange($event)">
+            <option value="COP">🇨🇴 COP</option>
+            <option value="USD">🇺🇸 USD</option>
+            <option value="BS">🇻🇪 Bs</option>
+          </select>
+
           <a routerLink="/carrito" class="cart-btn" [class.has-items]="(cart.items$ | async)?.length">
             <span class="icon">🛒</span>
             <span class="cart-count" *ngIf="cart.getItemCount() > 0">
@@ -67,6 +77,38 @@ import { PublicApiService } from '../../services/public-api.service';
       font-size: 14px;
       font-weight: 700;
       letter-spacing: 2px;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .currency-select {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+      letter-spacing: 0.5px;
+    }
+    .currency-select:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .currency-select:focus {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.3);
+    }
+    .currency-select option {
+      background: #1a1a1a;
+      color: white;
     }
     .cart-btn {
       text-decoration: none;
@@ -145,6 +187,53 @@ import { PublicApiService } from '../../services/public-api.service';
         box-shadow: 0 0 0 0 rgba(192, 57, 43, 0);
       }
     }
+
+    /* ─── Mobile ─────────────────────────── */
+    @media (max-width: 480px) {
+      .navbar {
+        height: 60px;
+      }
+      .nav-content {
+        padding: 0 12px;
+      }
+      .logo-text {
+        font-size: 16px;
+      }
+      .logo-sub {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+      }
+      .nav-actions {
+        gap: 8px;
+      }
+      .currency-select {
+        font-size: 11px;
+        padding: 6px 8px;
+        border-radius: 16px;
+      }
+      .cart-btn {
+        height: 42px;
+        padding: 0 12px;
+        gap: 6px;
+        border-radius: 21px;
+      }
+      .icon {
+        font-size: 18px;
+      }
+      .label-top {
+        display: none;
+      }
+      .label-amount {
+        font-size: 13px;
+      }
+      .cart-count {
+        width: 18px;
+        height: 18px;
+        font-size: 11px;
+        top: -4px;
+        left: -4px;
+      }
+    }
   `]
 })
 export class NavbarComponent {
@@ -152,4 +241,9 @@ export class NavbarComponent {
     public cart: CartService,
     public api: PublicApiService
   ) {}
+
+  onCurrencyChange(currency: string): void {
+    this.api.setCurrency(currency);
+  }
 }
+
